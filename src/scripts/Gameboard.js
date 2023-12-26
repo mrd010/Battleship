@@ -78,7 +78,7 @@ class Gameboard {
     targetShip.hit();
     this.#shotsReceived.push({ coordinates: [x, y], wasSuccess: true });
 
-    return { wasSuccess: true, isSunk: targetShip.isSunk() };
+    return { wasSuccess: true, destroyed: targetShip.isSunk() };
   }
 
   allShipsSunken() {
