@@ -1,4 +1,4 @@
-import createShips from './ShipSetup';
+import Ship from './Ship';
 
 class Gameboard {
   // array of ship objects belong to this game board
@@ -10,7 +10,7 @@ class Gameboard {
   constructor(shipsSetup) {
     this.#board = [[]];
     // setup ships array
-    this.#ships = createShips(shipsSetup);
+    this.#ships = shipsSetup.map((shipType) => new Ship(shipType));
   }
 }
 
