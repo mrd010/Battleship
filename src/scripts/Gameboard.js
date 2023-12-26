@@ -54,12 +54,16 @@ class Gameboard {
   }
 
   receiveAttack([x, y]) {
-    if (this.#board[x][y] === null) {
+    // if coordinates out of box or not on a ship miss shot
+    if (x >= 10 || x < 0 || y >= 10 || y < 0 || this.#board[x][y] === null) {
       return { wasSuccess: false };
     }
 
+    //  if coordinates are on a ship register shop as success and inform if ship is sunken
     const targetShip = this.#board[x][y];
-    return { wasSuccess: true };
+    targetShip.hit();
+
+    return { wasSuccess: true, isSunk: targetShip.isSunk() };
   }
 }
 
