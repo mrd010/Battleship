@@ -3,8 +3,15 @@ import Gameboard from './Gameboard';
 class Player {
   #gameboard;
 
-  constructor() {
+  #isAI;
+
+  constructor(type = 'p') {
     this.#gameboard = new Gameboard();
+    this.#isAI = type === 'ai';
+  }
+
+  giveControlToAi() {
+    this.#isAI = true;
   }
 
   getGameboard() {
