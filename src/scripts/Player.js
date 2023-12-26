@@ -10,8 +10,8 @@ class Player {
     this.#isAI = type === 'ai';
   }
 
-  giveControlToAi() {
-    this.#isAI = true;
+  isAI() {
+    return this.#isAI;
   }
 
   getGameboard() {
