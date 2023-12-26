@@ -28,6 +28,35 @@ describe('Gameboard place ships', () => {
     expect(gameboard.getSquare([5, 5])).toBeNull();
   });
 
+  test('cant place 2 length ship in [9,9][10,9]', () => {
+    expect(
+      gameboard.placeShip(2, [
+        [9, 9],
+        [10, 9],
+      ])
+    ).toBeFalsy();
+    expect(gameboard.getSquare([9, 9])).toBeNull();
+  });
+
+  test('cant place 11 length ship in board', () => {
+    expect(
+      gameboard.placeShip(11, [
+        [0, 9],
+        [1, 9],
+        [2, 9],
+        [3, 9],
+        [4, 9],
+        [5, 9],
+        [6, 9],
+        [7, 9],
+        [8, 9],
+        [9, 9],
+        [10, 9],
+      ])
+    ).toBeFalsy();
+    expect(gameboard.getSquare([3, 9])).toBeNull();
+  });
+
   test('cant place 3 length ship in [1,1][0,1][-1,1]', () => {
     expect(
       gameboard.placeShip(3, [
@@ -40,7 +69,7 @@ describe('Gameboard place ships', () => {
     expect(gameboard.getSquare([0, 1])).toBeNull();
   });
 
-  test('cant place 5 length ship in a few squares [1,1][1,2][1,3]', () => {
+  test('cant place 5 length ship in a few squares', () => {
     expect(
       gameboard.placeShip(5, [
         [1, 1],
