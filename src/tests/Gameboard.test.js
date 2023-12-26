@@ -83,9 +83,9 @@ describe('Gameboard place ships', () => {
   });
 });
 
-describe('Receive attack function', () => {
+describe.only('Receive attack function', () => {
   let gameboard;
-  beforeEach(() => {
+  beforeAll(() => {
     gameboard = new Gameboard();
     gameboard.placeShip(3, [
       [3, 3],
@@ -94,11 +94,21 @@ describe('Receive attack function', () => {
     ]);
   });
 
+  test('missing attack at [10,3]', () => {
+    expect(gameboard.receiveAttack([10, 3]).wasSuccess).toBeFalsy();
+  });
+
   test('missing attack at [4,3]', () => {
     expect(gameboard.receiveAttack([4, 3]).wasSuccess).toBeFalsy();
   });
 
-  test('hitting attack at [4,3]', () => {
+  test('hitting attack at [3,3]', () => {
     expect(gameboard.receiveAttack([3, 3]).wasSuccess).toBeTruthy();
+  });
+  test('hitting attack at [2,3] not sunk', () => {
+    expect(gameboard.receiveAttack([2, 3]).isSunk).toBeFalsy();
+  });
+  test('hitting attack at [1,3] and sunk', () => {
+    expect(gameboard.receiveAttack([1, 3]).isSunk).toBeTruthy();
   });
 });
