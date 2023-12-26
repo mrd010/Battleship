@@ -19,3 +19,5 @@ class Player {
   //     return { attacked: true, shot: opponent.getGameboard().receiveAttack(coordinates) };
   //   }
 }
+
+export default Player;
