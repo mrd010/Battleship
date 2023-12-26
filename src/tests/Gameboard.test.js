@@ -82,3 +82,23 @@ describe('Gameboard place ships', () => {
     expect(gameboard.getSquare([1, 3])).toBeNull();
   });
 });
+
+describe('Receive attack function', () => {
+  let gameboard;
+  beforeEach(() => {
+    gameboard = new Gameboard();
+    gameboard.placeShip(3, [
+      [3, 3],
+      [2, 3],
+      [1, 3],
+    ]);
+  });
+
+  test('missing attack at [4,3]', () => {
+    expect(gameboard.receiveAttack([4, 3]).wasSuccess).toBeFalsy();
+  });
+
+  test('hitting attack at [4,3]', () => {
+    expect(gameboard.receiveAttack([3, 3]).wasSuccess).toBeTruthy();
+  });
+});
