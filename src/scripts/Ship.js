@@ -8,6 +8,10 @@ class Ship {
     this.#hitCount = 0;
   }
 
+  getLength() {
+    return this.#length;
+  }
+
   getHitCount() {
     return this.#hitCount;
   }
