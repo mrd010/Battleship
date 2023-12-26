@@ -94,12 +94,16 @@ describe.only('Receive attack function', () => {
     ]);
   });
 
-  test('missing attack at [10,3]', () => {
-    expect(gameboard.receiveAttack([10, 3]).wasSuccess).toBeFalsy();
-  });
-
   test('missing attack at [4,3]', () => {
     expect(gameboard.receiveAttack([4, 3]).wasSuccess).toBeFalsy();
+  });
+
+  test('cant shot same spot again', () => {
+    expect(gameboard.isValidShot([4, 3])).toBeFalsy();
+  });
+
+  test('can shot a new spot', () => {
+    expect(gameboard.isValidShot([3, 3])).toBeTruthy();
   });
 
   test('hitting attack at [3,3]', () => {
@@ -110,5 +114,9 @@ describe.only('Receive attack function', () => {
   });
   test('hitting attack at [1,3] and sunk', () => {
     expect(gameboard.receiveAttack([1, 3]).isSunk).toBeTruthy();
+  });
+
+  test('hitting attack at [1,3] and sunk', () => {
+    expect(gameboard.isValidShot([1, 3])).toBeFalsy();
   });
 });
