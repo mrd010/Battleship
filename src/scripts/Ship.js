@@ -3,16 +3,21 @@ class Ship {
 
   #hitCount;
 
-  #sunken;
-
   constructor(shipSize) {
     this.#length = shipSize;
     this.#hitCount = 0;
-    this.#sunken = false;
+  }
+
+  getHitCount() {
+    return this.#hitCount;
   }
 
   hit() {
     this.#hitCount += 1;
+  }
+
+  isSunk() {
+    return this.#hitCount >= this.#length;
   }
 }
 
