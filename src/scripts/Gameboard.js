@@ -4,10 +4,13 @@ class Gameboard {
   //   2d array of board
   #board;
 
+  #ships;
+
   #shotsReceived;
 
   constructor() {
     this.#shotsReceived = [];
+    this.#ships = [];
     this.#board = [];
     for (let x = 0; x < 10; x += 1) {
       this.#board[x] = [];
@@ -49,6 +52,7 @@ class Gameboard {
 
     // if squares are Valid
     const ship = new Ship(shipLength);
+    this.#ships.push(ship);
     coordinatesArray.forEach((coordinate) => {
       // place ship in square
       this.#board[coordinate[0]][coordinate[1]] = ship;
@@ -57,7 +61,9 @@ class Gameboard {
   }
 
   isValidShot([x, y]) {
-    return this.#shotsReceived.includes([x, y]);
+    return !this.#shotsReceived.some(
+      (shot) => shot.coordinates[0] === x && shot.coordinates[1] === y
+    );
   }
 
   receiveAttack([x, y]) {
@@ -73,6 +79,10 @@ class Gameboard {
     this.#shotsReceived.push({ coordinates: [x, y], wasSuccess: true });
 
     return { wasSuccess: true, isSunk: targetShip.isSunk() };
+  }
+
+  allShipsSunken() {
+    return this.#ships.every((ship) => ship.isSunk());
   }
 }
 
