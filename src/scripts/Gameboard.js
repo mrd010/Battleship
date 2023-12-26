@@ -5,28 +5,50 @@ class Gameboard {
   #board;
 
   constructor() {
+    this.#board = [];
     for (let x = 0; x < 10; x += 1) {
+      this.#board[x] = [];
       for (let y = 0; y < 10; y += 1) {
         this.#board[x][y] = null;
       }
     }
   }
 
-  #areEmpty(coordinatesArray) {
-    return coordinatesArray.every((coordinate) => this.#board[coordinate.x][coordinate.y] === null);
+  getBoard() {
+    return this.#board;
+  }
+
+  getSquare([x, y]) {
+    return this.#board[x][y];
+  }
+
+  #areValidSquares(coordinatesArray) {
+    // check if all coordinates are Valid in board
+    return coordinatesArray.every(
+      (coordinate) =>
+        coordinate[0] >= 0 &&
+        coordinate[0] < 10 &&
+        coordinate[1] >= 0 &&
+        coordinate[1] < 10 &&
+        this.#board[coordinate[0]][coordinate[1]] === null
+    );
   }
 
   placeShip(shipLength, coordinatesArray) {
     // if squares are occupied
-    if (!this.#areEmpty(coordinatesArray)) {
+    if (
+      shipLength > 9 ||
+      shipLength !== coordinatesArray.length ||
+      !this.#areValidSquares(coordinatesArray)
+    ) {
       return false;
     }
 
-    // if squares are empty
+    // if squares are Valid
     const ship = new Ship(shipLength);
     coordinatesArray.forEach((coordinate) => {
       // place ship in square
-      this.#board[coordinate.x][coordinate.y] = ship;
+      this.#board[coordinate[0]][coordinate[1]] = ship;
     });
     return true;
   }
