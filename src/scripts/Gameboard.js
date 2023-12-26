@@ -52,6 +52,15 @@ class Gameboard {
     });
     return true;
   }
+
+  receiveAttack([x, y]) {
+    if (this.#board[x][y] === null) {
+      return { wasSuccess: false };
+    }
+
+    const targetShip = this.#board[x][y];
+    return { wasSuccess: true };
+  }
 }
 
 export default Gameboard;
