@@ -4,7 +4,10 @@ class Gameboard {
   //   2d array of board
   #board;
 
+  #shotsReceived;
+
   constructor() {
+    this.#shotsReceived = [];
     this.#board = [];
     for (let x = 0; x < 10; x += 1) {
       this.#board[x] = [];
@@ -53,15 +56,21 @@ class Gameboard {
     return true;
   }
 
+  isValidShot([x, y]) {
+    return this.#shotsReceived.includes([x, y]);
+  }
+
   receiveAttack([x, y]) {
     // if coordinates out of box or not on a ship miss shot
-    if (x >= 10 || x < 0 || y >= 10 || y < 0 || this.#board[x][y] === null) {
+    if (this.#board[x][y] === null) {
+      this.#shotsReceived.push({ coordinates: [x, y], wasSuccess: false });
       return { wasSuccess: false };
     }
 
     //  if coordinates are on a ship register shop as success and inform if ship is sunken
     const targetShip = this.#board[x][y];
     targetShip.hit();
+    this.#shotsReceived.push({ coordinates: [x, y], wasSuccess: true });
 
     return { wasSuccess: true, isSunk: targetShip.isSunk() };
   }
