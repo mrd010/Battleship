@@ -1,13 +1,20 @@
 import Gameboard from './Gameboard';
 
 class Player {
+  #number;
+
   #gameboard;
 
   #isAI;
 
-  constructor(type = 'p') {
+  constructor(number, type = 'p') {
     this.#gameboard = new Gameboard();
+    this.#number = number;
     this.#isAI = type === 'ai';
+  }
+
+  getNumber() {
+    return this.#number;
   }
 
   isAI() {
