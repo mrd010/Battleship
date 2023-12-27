@@ -18,10 +18,6 @@ class Ship {
     return this.#name;
   }
 
-  setName(name) {
-    this.#name = name;
-  }
-
   getLength() {
     return this.#length;
   }

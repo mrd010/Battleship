@@ -50,7 +50,11 @@ class Game {
   }
 
   placeShipFor(playerNumber, shipName, shipLength, coordinates) {
-    return this.player(playerNumber).placeShip(shipName, shipLength, coordinates);
+    if (this.player(playerNumber) !== null) {
+      return this.player(playerNumber).placeShip(shipName, shipLength, coordinates);
+    }
+
+    return false;
   }
 
   // playTurn(coordinates) {

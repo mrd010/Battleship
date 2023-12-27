@@ -24,10 +24,10 @@ class Player {
 
   receiveAttack(coordinate) {
     if (this.#gameboard.isValidShot(coordinate)) {
-      return { attacked: true, shot: this.#gameboard.receiveAttack(coordinate) };
+      return { fired: true, shot: this.#gameboard.receiveAttack(coordinate) };
     }
 
-    return { attacked: false };
+    return { fired: false };
   }
 
   isLost() {
