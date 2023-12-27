@@ -14,23 +14,31 @@ test('gameboard initials', () => {
 
 describe('Gameboard place ships', () => {
   let gameboard;
-  beforeEach(() => (gameboard = new Gameboard()));
+  beforeEach(() => {
+    gameboard = new Gameboard();
+    gameboard.setupShips([
+      { name: 'Destroyer', length: 3 },
+      { name: 'Patrol', length: 2 },
+    ]);
+  });
 
-  test('can place 2 length ship in [5,6][5,7]', () => {
+  test('can place 3 length ship in [5,6][5,7][5,8]', () => {
     expect(
-      gameboard.placeShip(2, [
+      gameboard.placeShip('Destroyer', 3, [
         [5, 6],
         [5, 7],
+        [5, 8],
       ])
     ).toBeTruthy();
     expect(gameboard.getSquare([5, 6])).toBeInstanceOf(Ship);
     expect(gameboard.getSquare([5, 7])).toBeInstanceOf(Ship);
+    expect(gameboard.getSquare([5, 8])).toBeInstanceOf(Ship);
     expect(gameboard.getSquare([5, 5])).toBeNull();
   });
 
   test('cant place 2 length ship in [9,9][10,9]', () => {
     expect(
-      gameboard.placeShip(2, [
+      gameboard.placeShip('Patrol', 2, [
         [9, 9],
         [10, 9],
       ])
@@ -40,7 +48,7 @@ describe('Gameboard place ships', () => {
 
   test('cant place 11 length ship in board', () => {
     expect(
-      gameboard.placeShip(11, [
+      gameboard.placeShip('Long ship', 11, [
         [0, 9],
         [1, 9],
         [2, 9],
@@ -59,7 +67,7 @@ describe('Gameboard place ships', () => {
 
   test('cant place 3 length ship in [1,1][0,1][-1,1]', () => {
     expect(
-      gameboard.placeShip(3, [
+      gameboard.placeShip('some ship', 3, [
         [1, 1],
         [0, 1],
         [-1, 1],
@@ -71,7 +79,7 @@ describe('Gameboard place ships', () => {
 
   test('cant place 5 length ship in a few squares', () => {
     expect(
-      gameboard.placeShip(5, [
+      gameboard.placeShip('5 length ship', 5, [
         [1, 1],
         [1, 2],
         [1, 3],
@@ -83,40 +91,61 @@ describe('Gameboard place ships', () => {
   });
 });
 
-describe.only('Receive attack function', () => {
+describe('Receive attack function', () => {
   let gameboard;
   beforeAll(() => {
     gameboard = new Gameboard();
-    gameboard.placeShip(3, [
+    gameboard.setupShips([
+      { name: 'Destroyer', length: 3 },
+      { name: 'Patrol', length: 2 },
+    ]);
+    gameboard.placeShip('Destroyer', 3, [
       [3, 3],
       [2, 3],
       [1, 3],
     ]);
+    gameboard.placeShip('Patrol', 2, [
+      [5, 3],
+      [4, 3],
+    ]);
   });
 
-  test('missing attack at [4,3]', () => {
-    expect(gameboard.receiveAttack([4, 3]).wasSuccess).toBeFalsy();
+  test('missing attack at [6,3]', () => {
+    expect(gameboard.receiveAttack([6, 3]).wasSuccess).toBeFalsy();
   });
 
   test('cant shot same spot again', () => {
-    expect(gameboard.isValidShot([4, 3])).toBeFalsy();
+    expect(gameboard.isValidShot([6, 3])).toBeFalsy();
   });
 
   test('can shot a new spot', () => {
     expect(gameboard.isValidShot([3, 3])).toBeTruthy();
+  });
+  test('cant shot out of box', () => {
+    expect(gameboard.isValidShot([20, 3])).toBeFalsy();
   });
 
   test('hitting attack at [3,3]', () => {
     expect(gameboard.receiveAttack([3, 3]).wasSuccess).toBeTruthy();
   });
   test('hitting attack at [2,3] not sunk', () => {
-    expect(gameboard.receiveAttack([2, 3]).isSunk).toBeFalsy();
+    expect(gameboard.receiveAttack([2, 3]).destroyed).toBeFalsy();
   });
   test('hitting attack at [1,3] and sunk', () => {
-    expect(gameboard.receiveAttack([1, 3]).isSunk).toBeTruthy();
+    expect(gameboard.receiveAttack([1, 3]).destroyed).toBeTruthy();
   });
 
-  test('hitting attack at [1,3] and sunk', () => {
+  test('hitting attack at [1,3] again', () => {
     expect(gameboard.isValidShot([1, 3])).toBeFalsy();
+  });
+
+  test('second ship is alive yet', () => {
+    gameboard.receiveAttack([5, 3]);
+    expect(gameboard.allShipsSunken()).toBeFalsy();
+  });
+
+  test('Destroy second ship', () => {
+    gameboard.receiveAttack([4, 3]);
+    expect(gameboard.allShipsSunken()).toBeTruthy();
   });
 });
