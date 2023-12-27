@@ -11,7 +11,7 @@ class Game {
   }
 
   // create and assign a new player to game
-  newPlayer(playerType) {
+  addPlayer(playerType) {
     const p = new Player(playerType);
     this.#players.push(p);
     return p;
