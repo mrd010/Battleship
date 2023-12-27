@@ -28,6 +28,10 @@ class Gameboard {
     return this.#board[x][y];
   }
 
+  setupShips(settings) {
+    this.#ships = settings.map((shipDetail) => new Ship(shipDetail));
+  }
+
   #areValidSquares(coordinatesArray) {
     // check if all coordinates are Valid in board
     return coordinatesArray.every(
@@ -40,7 +44,7 @@ class Gameboard {
     );
   }
 
-  placeShip(shipLength, coordinatesArray) {
+  placeShip(shipName, shipLength, coordinatesArray) {
     // if squares are occupied
     if (
       shipLength > 9 ||
@@ -51,13 +55,18 @@ class Gameboard {
     }
 
     // if squares are Valid
-    const ship = new Ship(shipLength);
-    this.#ships.push(ship);
-    coordinatesArray.forEach((coordinate) => {
-      // place ship in square
-      this.#board[coordinate[0]][coordinate[1]] = ship;
-    });
-    return true;
+    const currentShip = this.#ships.find(
+      (ship) => ship.getName() === shipName && ship.getLength() === shipLength && !ship.isPlaced()
+    );
+    if (currentShip) {
+      coordinatesArray.forEach((coordinate) => {
+        // place ship in square
+        this.#board[coordinate[0]][coordinate[1]] = currentShip;
+      });
+      return true;
+    }
+
+    return false;
   }
 
   isValidShot([x, y]) {

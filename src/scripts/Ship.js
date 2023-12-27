@@ -1,11 +1,25 @@
 class Ship {
+  #name;
+
   #length;
 
   #hitCount;
 
-  constructor(shipSize) {
-    this.#length = shipSize;
+  #placed;
+
+  constructor(shipDetails) {
+    this.#name = shipDetails.name;
+    this.#length = shipDetails.length;
     this.#hitCount = 0;
+    this.#placed = false;
+  }
+
+  getName() {
+    return this.#name;
+  }
+
+  setName(name) {
+    this.#name = name;
   }
 
   getLength() {
@@ -14,6 +28,14 @@ class Ship {
 
   getHitCount() {
     return this.#hitCount;
+  }
+
+  isPlaced() {
+    return this.#placed;
+  }
+
+  fortify() {
+    this.#placed = true;
   }
 
   hit() {

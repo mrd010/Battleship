@@ -1,20 +1,13 @@
 import Gameboard from './Gameboard';
 
 class Player {
-  #number;
-
   #gameboard;
 
   #isAI;
 
-  constructor(number, type = 'p') {
+  constructor(type = 'p') {
     this.#gameboard = new Gameboard();
-    this.#number = number;
     this.#isAI = type === 'ai';
-  }
-
-  getNumber() {
-    return this.#number;
   }
 
   isAI() {
@@ -25,13 +18,21 @@ class Player {
     return this.#gameboard;
   }
 
-  //   attack(opponent, coordinates) {
-  //     if (!opponent.getGameboard().isValidShot(coordinates)) {
-  //       return { attacked: false };
-  //     }
+  placeShip(shipName, shipLength, coordinates) {
+    return this.#gameboard.placeShip(shipName, shipLength, coordinates);
+  }
 
-  //     return { attacked: true, shot: opponent.getGameboard().receiveAttack(coordinates) };
-  //   }
+  receiveAttack(coordinate) {
+    if (this.#gameboard.isValidShot(coordinate)) {
+      return { attacked: true, shot: this.#gameboard.receiveAttack(coordinate) };
+    }
+
+    return { attacked: false };
+  }
+
+  isLost() {
+    return this.#gameboard.allShipsSunken();
+  }
 }
 
 export default Player;
