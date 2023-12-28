@@ -12,7 +12,7 @@ export const createStartScreen = function createStartScreen() {
   return startScreen;
 };
 
-const createPlayerField = function createPlayerField(boardWidth) {
+const createPlayerField = function createPlayerField() {
   const playerField = createContainer('grid grid-rows-[auto_minmax(0,1fr)] self-stretch');
   // header
   const playerFieldHeader = createContainer('field-header p-2 m-2');
@@ -26,10 +26,10 @@ const createPlayerField = function createPlayerField(boardWidth) {
   const playerBoard = createContainer(
     `game-board grid place-self-center border-2 rounded-md border-slate-200`
   );
-  playerBoard.style.gridTemplateRows = `repeat(${boardWidth}, minmax(0, 1fr))`;
-  playerBoard.style.gridTemplateColumns = `repeat(${boardWidth}, minmax(0, 1fr))`;
-  for (let x = 0; x < boardWidth; x += 1) {
-    for (let y = 0; y < boardWidth; y += 1) {
+  playerBoard.style.gridTemplateRows = `repeat(10, minmax(0, 1fr))`;
+  playerBoard.style.gridTemplateColumns = `repeat(10, minmax(0, 1fr))`;
+  for (let x = 0; x < 10; x += 1) {
+    for (let y = 0; y < 10; y += 1) {
       const gridCell = createElementWithClasses(
         'button',
         'w-6 h-6 bg-slate-50/5 border-[1px] border-slate-50/10',
@@ -44,7 +44,7 @@ const createPlayerField = function createPlayerField(boardWidth) {
   return playerField;
 };
 
-export const createPlayScreen = function createPlayScreen(shipsSetup, boardWidth) {
+export const createPlayScreen = function createPlayScreen(shipsSetup) {
   // play screen page ########################
   const playScreen = createContainer(
     'grid grid-rows-[auto_auto_1fr] min-h-screen items-start',
@@ -106,12 +106,12 @@ export const createPlayScreen = function createPlayScreen(shipsSetup, boardWidth
 
   // create play fields section ########################
   // player field
-  const playerField = createPlayerField(boardWidth);
+  const playerField = createPlayerField();
   playerField.setAttribute('id', 'player-field');
   playerField.querySelector('.field-header .title').textContent = 'Place your ships in board';
   playerField.querySelector('.field-header .desc').textContent = 'Press R for rotate';
   // opponent board
-  const opponentField = createPlayerField(boardWidth);
+  const opponentField = createPlayerField();
   opponentField.setAttribute('id', 'opponent-field');
   opponentField.classList.add('hidden');
   // append

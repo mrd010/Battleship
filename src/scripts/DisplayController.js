@@ -71,9 +71,10 @@ const hideShipPlaceholder = function hideShipPlaceholder(placeholder) {
 
 // #############################################################
 const loadPlayScreen = function loadPlayScreen() {
+  // setup game
   // create play screen with default settings
   const gameDefaults = getGameDefaults();
-  const playScreen = createPlayScreen(gameDefaults.shipsSetup, gameDefaults.boardWidth);
+  const playScreen = createPlayScreen(gameDefaults.shipsSetup);
 
   // hide starting screen page
   document.getElementById('start-screen').remove();
@@ -115,6 +116,13 @@ const loadPlayScreen = function loadPlayScreen() {
         );
         showShipPlaceholder(playerBoard, shipPlaceholder);
       }
+    });
+
+    boardBtn.addEventListener('click', () => {
+      // placing placeholder when its on board and clicked
+      // if (shipPlaceholder !== null) {
+      //   const placed=
+      // }
     });
   });
 
