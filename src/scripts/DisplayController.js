@@ -1,6 +1,7 @@
 import { getGameDefaults } from './GameController';
 import { createPlayScreen, createStartScreen } from './TemplateCreator';
 
+// #############################################################
 const createShipPlaceholder = function createShipPlaceholder(
   shipLabel,
   sampleCell,
@@ -15,9 +16,12 @@ const createShipPlaceholder = function createShipPlaceholder(
   const shipWidth = orientation === 'h' ? shipSize : 1;
   const shipHeight = orientation === 'v' ? shipSize : 1;
   // size
+  // make width and height of placeholder according to board cells size and ship length and orientation of placeholder
   shipPlaceholder.style.width = `${sampleSize * shipWidth}px`;
   shipPlaceholder.style.height = `${sampleSize * shipHeight}px`;
   // position
+  // place placeholder in board according to its size and pointer coordinates
+  // also position cant be out of board
   const startPointRow = Math.min(
     11 - shipHeight,
     Math.max(1, coordinates.x + 1 - Math.floor(shipHeight / 2))
@@ -27,38 +31,44 @@ const createShipPlaceholder = function createShipPlaceholder(
     Math.max(1, coordinates.y + 1 - Math.floor(shipWidth / 2))
   );
 
+  // place holder spans from starting point to its length
   shipPlaceholder.style.gridRowStart = `${startPointRow}`;
   shipPlaceholder.style.gridColumnStart = `${startPointCol}`;
   shipPlaceholder.style.gridRowEnd = `span ${shipHeight}`;
   shipPlaceholder.style.gridColumnEnd = `span ${shipWidth}`;
-  // 3.make text inside according to ship label name
+
+  // 3.make text inside according to ship name
   shipPlaceholder.textContent = shipLabel.firstChild.textContent;
   shipPlaceholder.removeAttribute('for');
 
-  // 4.text orientation
+  // 4.text orientation changes on rotate
   shipPlaceholder.style.writingMode = orientation === 'h' ? 'horizontal-tb' : 'vertical-rl';
 
-  // 4.send it behind
+  // 4.send placeholder behind board
   shipPlaceholder.classList.add('-z-10');
-
-  // 5.give coordinates in board
 
   return shipPlaceholder;
 };
 
+// #############################################################
 const showShipPlaceholder = function showShipPlaceholder(board, placeholder) {
   if (board.querySelector('label')) {
+    // if there is ship showing in board remove it first
     board.querySelector('label').remove();
   }
+  // then show new one on board
   board.appendChild(placeholder);
 };
 
+// #############################################################
 const hideShipPlaceholder = function hideShipPlaceholder(placeholder) {
   if (placeholder !== null) {
+    // if there is ship showing in board remove it
     placeholder.remove();
   }
 };
 
+// #############################################################
 const loadPlayScreen = function loadPlayScreen() {
   // create play screen with default settings
   const gameDefaults = getGameDefaults();
@@ -70,6 +80,7 @@ const loadPlayScreen = function loadPlayScreen() {
   // activate ship for placement event
   let activeShipLabel = null;
   playScreen.querySelectorAll('#ships-menu .ship-button').forEach((shipBtn) => {
+    // mark activated ship in ships menu for placing
     shipBtn.querySelector('input').addEventListener('change', (e) => {
       if (e.target.checked) {
         activeShipLabel = shipBtn.querySelector('label');
@@ -77,34 +88,38 @@ const loadPlayScreen = function loadPlayScreen() {
     });
   });
 
+  // a copy of ship label which activated. we're gonna place it on board
   let shipPlaceholder = null;
+  // coordinates of board cell which mouse is over it
   let coordinates = { x: 0, y: 0 };
+  // rotation of ship indicator
   let orientation = 'h';
 
   const playerBoard = playScreen.querySelector('#player-field .game-board');
   playerBoard.querySelectorAll('button').forEach((boardBtn) => {
     boardBtn.addEventListener('mouseenter', () => {
-      coordinates = {
-        x: Number(boardBtn.getAttribute('data-x')),
-        y: Number(boardBtn.getAttribute('data-y')),
-      };
-
+      // when hover on any board cell and there is a ship selected for place
       if (activeShipLabel !== null) {
+        // save current coordinates
+        coordinates = {
+          x: Number(boardBtn.getAttribute('data-x')),
+          y: Number(boardBtn.getAttribute('data-y')),
+        };
+        // create a placeholder with in current coordinates and selected ship
         shipPlaceholder = createShipPlaceholder(
           activeShipLabel,
           boardBtn,
           orientation,
           coordinates
         );
-        if (shipPlaceholder !== null) {
-          showShipPlaceholder(playerBoard, shipPlaceholder);
-        }
+        showShipPlaceholder(playerBoard, shipPlaceholder);
       }
     });
   });
 
   window.addEventListener('keydown', (e) => {
     if (e.code === 'KeyR' && shipPlaceholder !== null) {
+      // rotate placeholder when press R
       e.preventDefault();
       orientation = orientation === 'h' ? 'v' : 'h';
       shipPlaceholder = createShipPlaceholder(
@@ -118,10 +133,12 @@ const loadPlayScreen = function loadPlayScreen() {
   });
 
   playerBoard.addEventListener('mouseleave', () => {
+    // hide placeholder when leaving board area
     hideShipPlaceholder(shipPlaceholder);
   });
 };
 
+// #############################################################
 const initDisplay = function initDisplay() {
   // create start screen
   document.body.setAttribute('class', 'bg-gradient-to-b h-screen from-slate-950 to-slate-900');
@@ -132,4 +149,5 @@ const initDisplay = function initDisplay() {
   startScreen.querySelector('#start-button').addEventListener('click', loadPlayScreen);
 };
 
+// #############################################################
 export default initDisplay;
