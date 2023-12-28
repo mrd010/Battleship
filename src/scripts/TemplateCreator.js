@@ -24,21 +24,20 @@ const createPlayerField = function createPlayerField(boardWidth) {
 
   // player board
   const playerBoard = createContainer(
-    `game-board grid place-self-center border-2 rounded-md border-slate-200`,
-    'player-board'
+    `game-board grid place-self-center border-2 rounded-md border-slate-200`
   );
   playerBoard.style.gridTemplateRows = `repeat(${boardWidth}, minmax(0, 1fr))`;
   playerBoard.style.gridTemplateColumns = `repeat(${boardWidth}, minmax(0, 1fr))`;
   for (let x = 0; x < boardWidth; x += 1) {
     for (let y = 0; y < boardWidth; y += 1) {
-      playerBoard.appendChild(
-        createElementWithClasses(
-          'button',
-          'w-6 h-6 bg-slate-50/5 border-[1px] border-slate-50/10',
-          ['data-x', x],
-          ['data-y', y]
-        )
+      const gridCell = createElementWithClasses(
+        'button',
+        'w-6 h-6 bg-slate-50/5 border-[1px] border-slate-50/10',
+        ['data-x', x],
+        ['data-y', y]
       );
+      gridCell.style.gridArea = `${x + 1} / ${y + 1} / span 1 / span 1`;
+      playerBoard.appendChild(gridCell);
     }
   }
   playerField.appendChild(playerBoard);
@@ -66,26 +65,41 @@ export const createPlayScreen = function createPlayScreen(shipsSetup, boardWidth
   // create a ship button for each ship in shipsSetup
   // with ship name and ship length provided
   // each ship takes length amount of grid cells
-  shipsSetup.forEach((ship) => {
-    const shipBtn = createElementWithClasses(
-      'button',
-      `ship-button border-2 grid items-stretch rounded-md overflow-hidden relative`,
+  shipsSetup.forEach((ship, index) => {
+    const shipBtn = createContainer(
+      'ship-button grid items-stretch peer-checked:ring-8 rounded-md'
+    );
+    const shipRadioBtn = createElementWithClasses(
+      'input',
+      'peer hidden',
+      ['type', 'radio'],
+      ['id', `ship${index}`],
+      ['name', `ships`],
       ['data-ship-name', ship.name],
       ['data-ship-length', ship.length]
     );
-    shipBtn.style.height = `2rem`;
-    shipBtn.style.width = `${2 * ship.length}rem`;
-    shipBtn.style.gridTemplateColumns = `repeat(${ship.length}, minmax(0, 1fr))`;
-    shipBtn.style.gridTemplateRows = `repeat(1, minmax(0, 1fr))`;
+    const shipLabel = createElementWithClasses(
+      'label',
+      `grid items-stretch border-2 peer-checked:ring-2 opacity-80 peer-checked:opacity-100 cursor-pointer ring-red-500 rounded-md overflow-hidden relative`,
+      ['for', `ship${index}`],
+      ['data-ship-name', ship.name],
+      ['data-ship-length', ship.length]
+    );
+    shipLabel.style.height = `2rem`;
+    shipLabel.style.width = `${2 * ship.length}rem`;
+    shipLabel.style.gridTemplateColumns = `repeat(${ship.length}, minmax(0, 1fr))`;
+    shipLabel.style.gridTemplateRows = `repeat(1, minmax(0, 1fr))`;
     const shipName = createContainer(
       'ship-name text-slate-50 z-10 text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm'
     );
     shipName.textContent = ship.name;
-    shipBtn.appendChild(shipName);
-    // create ship cells with length amount
+    shipLabel.appendChild(shipName);
+    // create ship cell parts with length amount
     for (let i = 0; i < ship.length; i += 1) {
-      shipBtn.appendChild(createContainer('ship-part odd:bg-slate-700 even:bg-slate-600'));
+      shipLabel.appendChild(createContainer('ship-part odd:bg-slate-700 even:bg-slate-600'));
     }
+
+    appendChildren(shipBtn, [shipRadioBtn, shipLabel]);
     shipsMenu.appendChild(shipBtn);
   });
   playScreen.appendChild(shipsMenu);
@@ -93,12 +107,12 @@ export const createPlayScreen = function createPlayScreen(shipsSetup, boardWidth
   // create play fields section ########################
   // player field
   const playerField = createPlayerField(boardWidth);
-  playerField.setAttribute('id', 'player-board');
+  playerField.setAttribute('id', 'player-field');
   playerField.querySelector('.field-header .title').textContent = 'Place your ships in board';
   playerField.querySelector('.field-header .desc').textContent = 'Press R for rotate';
   // opponent board
   const opponentField = createPlayerField(boardWidth);
-  opponentField.setAttribute('id', 'opponent-board');
+  opponentField.setAttribute('id', 'opponent-field');
   opponentField.classList.add('hidden');
   // append
   appendChildren(playScreen, [playerField, opponentField]);

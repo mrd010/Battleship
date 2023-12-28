@@ -56,11 +56,6 @@ class Game {
 
     return false;
   }
-
-  // playTurn(coordinates) {
-  //   const activePlayer = this.#turn;
-  //   activePlayer.receiveAttack()
-  // }
 }
 
 export default Game;
