@@ -66,6 +66,7 @@ const hideShipPlaceholder = function hideShipPlaceholder(placeholder) {
     // if there is ship showing in board remove it
     placeholder.remove();
   }
+  return null;
 };
 
 // #############################################################
@@ -118,23 +119,25 @@ const loadPlayScreen = function loadPlayScreen() {
   });
 
   window.addEventListener('keydown', (e) => {
-    if (e.code === 'KeyR' && shipPlaceholder !== null) {
+    if (e.code === 'KeyR' && activeShipLabel !== null) {
       // rotate placeholder when press R
       e.preventDefault();
       orientation = orientation === 'h' ? 'v' : 'h';
-      shipPlaceholder = createShipPlaceholder(
-        activeShipLabel,
-        playerBoard.firstChild,
-        orientation,
-        coordinates
-      );
-      showShipPlaceholder(playerBoard, shipPlaceholder);
+      if (shipPlaceholder !== null) {
+        shipPlaceholder = createShipPlaceholder(
+          activeShipLabel,
+          playerBoard.firstChild,
+          orientation,
+          coordinates
+        );
+        showShipPlaceholder(playerBoard, shipPlaceholder);
+      }
     }
   });
 
   playerBoard.addEventListener('mouseleave', () => {
     // hide placeholder when leaving board area
-    hideShipPlaceholder(shipPlaceholder);
+    shipPlaceholder = hideShipPlaceholder(shipPlaceholder);
   });
 };
 
