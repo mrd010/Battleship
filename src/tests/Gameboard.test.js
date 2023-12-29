@@ -14,9 +14,10 @@ test('gameboard initials', () => {
 
 describe('Gameboard place ships', () => {
   let gameboard;
-  beforeEach(() => {
+  beforeAll(() => {
     gameboard = new Gameboard();
     gameboard.setupShips([
+      { name: 'Destroyer', length: 3 },
       { name: 'Destroyer', length: 3 },
       { name: 'Patrol', length: 2 },
     ]);
@@ -46,48 +47,31 @@ describe('Gameboard place ships', () => {
     expect(gameboard.getSquare([9, 9])).toBeNull();
   });
 
-  test('cant place 11 length ship in board', () => {
+  test('cant place 2 ships adjacent 1', () => {
     expect(
-      gameboard.placeShip('Long ship', 11, [
-        [0, 9],
-        [1, 9],
-        [2, 9],
-        [3, 9],
-        [4, 9],
-        [5, 9],
-        [6, 9],
-        [7, 9],
-        [8, 9],
-        [9, 9],
-        [10, 9],
+      gameboard.placeShip('Destroyer', 3, [
+        [6, 5],
+        [6, 6],
+        [6, 7],
       ])
     ).toBeFalsy();
-    expect(gameboard.getSquare([3, 9])).toBeNull();
   });
-
-  test('cant place 3 length ship in [1,1][0,1][-1,1]', () => {
+  test('can place this ship', () => {
     expect(
-      gameboard.placeShip('some ship', 3, [
-        [1, 1],
-        [0, 1],
-        [-1, 1],
+      gameboard.placeShip('Destroyer', 3, [
+        [7, 5],
+        [7, 6],
+        [7, 7],
       ])
-    ).toBeFalsy();
-    expect(gameboard.getSquare([1, 1])).toBeNull();
-    expect(gameboard.getSquare([0, 1])).toBeNull();
+    ).toBeTruthy();
   });
-
-  test('cant place 5 length ship in a few squares', () => {
+  test('cant place 2 ships adjacent 3', () => {
     expect(
-      gameboard.placeShip('5 length ship', 5, [
-        [1, 1],
-        [1, 2],
-        [1, 3],
+      gameboard.placeShip('Patrol', 2, [
+        [5, 5],
+        [6, 5],
       ])
     ).toBeFalsy();
-    expect(gameboard.getSquare([1, 1])).toBeNull();
-    expect(gameboard.getSquare([1, 2])).toBeNull();
-    expect(gameboard.getSquare([1, 3])).toBeNull();
   });
 });
 
