@@ -11,4 +11,7 @@ export const getGameDefaults = function getGameDefaults() {
 
 export const setupGame = function setupGame() {
   const game = new Game(SHIPS_SETUP);
+  game.addPlayer('p');
+  game.addPlayer('ai');
+  return game;
 };

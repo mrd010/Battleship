@@ -102,6 +102,10 @@ class Gameboard {
     return this.#hitShot([x, y]);
   }
 
+  allShipsPlaced() {
+    return this.#ships.every((ship) => ship.isPlaced());
+  }
+
   allShipsSunken() {
     return this.#ships.every((ship) => ship.isSunk());
   }

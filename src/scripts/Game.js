@@ -56,6 +56,10 @@ class Game {
 
     return false;
   }
+
+  allShipsPlaced(playerNum) {
+    return this.player(playerNum).getGameboard().allShipsPlaced();
+  }
 }
 
 export default Game;

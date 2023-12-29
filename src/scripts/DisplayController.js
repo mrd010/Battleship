@@ -1,4 +1,4 @@
-import { getGameDefaults } from './GameController';
+import { getGameDefaults, setupGame } from './GameController';
 import { createPlayScreen, createStartScreen } from './TemplateCreator';
 
 // #############################################################
@@ -10,6 +10,7 @@ const createShipPlaceholder = function createShipPlaceholder(
 ) {
   // 1.clone ship label element
   const shipPlaceholder = shipLabel.cloneNode();
+  shipPlaceholder.classList.add('placeholder');
   // 2.correct placeholder size and position
   const sampleSize = getComputedStyle(sampleCell).getPropertyValue('width').slice(0, -2);
   const shipSize = Number(shipPlaceholder.getAttribute('data-ship-length'));
@@ -52,9 +53,9 @@ const createShipPlaceholder = function createShipPlaceholder(
 
 // #############################################################
 const showShipPlaceholder = function showShipPlaceholder(board, placeholder) {
-  if (board.querySelector('label')) {
+  if (board.querySelector('.placeholder')) {
     // if there is ship showing in board remove it first
-    board.querySelector('label').remove();
+    board.querySelector('.placeholder').remove();
   }
   // then show new one on board
   board.appendChild(placeholder);
@@ -70,8 +71,26 @@ const hideShipPlaceholder = function hideShipPlaceholder(placeholder) {
 };
 
 // #############################################################
+const getShipGridCells = function getShipGridCells(shipElement, orientation) {
+  const startPointX = Number(shipElement.style.gridColumnStart);
+  const startPointY = Number(shipElement.style.gridRowStart);
+  const shipLength = Number(shipElement.getAttribute('data-ship-length'));
+
+  const coordinates = [];
+  for (let i = 0; i < shipLength; i += 1) {
+    if (orientation === 'h') {
+      coordinates.push([startPointX - 1 + i, startPointY - 1]);
+    } else {
+      coordinates.push([startPointX - 1, startPointY - 1 + i]);
+    }
+  }
+
+  return coordinates;
+};
+// #############################################################
 const loadPlayScreen = function loadPlayScreen() {
   // setup game
+  const game = setupGame();
   // create play screen with default settings
   const gameDefaults = getGameDefaults();
   const playScreen = createPlayScreen(gameDefaults.shipsSetup);
@@ -80,11 +99,13 @@ const loadPlayScreen = function loadPlayScreen() {
   document.getElementById('start-screen').remove();
   document.body.appendChild(playScreen);
   // activate ship for placement event
+  let activeShipBtn = null;
   let activeShipLabel = null;
   playScreen.querySelectorAll('#ships-menu .ship-button').forEach((shipBtn) => {
     // mark activated ship in ships menu for placing
     shipBtn.querySelector('input').addEventListener('change', (e) => {
       if (e.target.checked) {
+        activeShipBtn = e.target;
         activeShipLabel = shipBtn.querySelector('label');
       }
     });
@@ -120,9 +141,29 @@ const loadPlayScreen = function loadPlayScreen() {
 
     boardBtn.addEventListener('click', () => {
       // placing placeholder when its on board and clicked
-      // if (shipPlaceholder !== null) {
-      //   const placed=
-      // }
+
+      if (shipPlaceholder !== null) {
+        const isPlaced = game.placeShipFor(
+          1,
+          shipPlaceholder.getAttribute('data-ship-name'),
+          Number(shipPlaceholder.getAttribute('data-ship-length')),
+          getShipGridCells(shipPlaceholder, orientation)
+        );
+        // if placed leave ship on board
+        if (isPlaced) {
+          activeShipBtn.setAttribute('disabled', true);
+          activeShipBtn.checked = false;
+          shipPlaceholder.classList.remove('placeholder');
+          // reset
+          activeShipBtn = null;
+          activeShipLabel = null;
+          shipPlaceholder = null;
+
+          // check if all player ships placed
+          if (game.allShipsPlaced(1)) {
+          }
+        }
+      }
     });
   });
 

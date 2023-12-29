@@ -80,7 +80,7 @@ export const createPlayScreen = function createPlayScreen(shipsSetup) {
     );
     const shipLabel = createElementWithClasses(
       'label',
-      `grid items-stretch border-2 peer-checked:ring-2 opacity-80 peer-checked:opacity-100 cursor-pointer ring-red-500 rounded-md overflow-hidden relative`,
+      `grid items-stretch border-2 peer-checked:ring-2 peer-disabled:opacity-30 opacity-80 peer-checked:opacity-100 cursor-pointer ring-red-500 rounded-md overflow-hidden relative text-slate-50 text-sm`,
       ['for', `ship${index}`],
       ['data-ship-name', ship.name],
       ['data-ship-length', ship.length]
