@@ -12,7 +12,6 @@ class Game {
   constructor(shipsSetup) {
     this.#player1 = null;
     this.#player2 = null;
-    this.#turn = this.#player1;
     this.#shipsSetup = shipsSetup;
   }
 
@@ -44,10 +43,6 @@ class Game {
     return null;
   }
 
-  #changeTurn() {
-    this.#turn = this.#turn === this.#player1 ? this.#player2 : this.#player1;
-  }
-
   placeShipFor(playerNumber, shipName, shipLength, coordinates) {
     if (this.player(playerNumber) !== null) {
       return this.player(playerNumber).placeShip(shipName, shipLength, coordinates);
@@ -58,6 +53,35 @@ class Game {
 
   allShipsPlaced(playerNum) {
     return this.player(playerNum).getGameboard().allShipsPlaced();
+  }
+
+  playTurn(shotCoordinates) {
+    const battleReport = { playerShotStatus: 'invalid', aiShots: [] };
+    const attackResult = this.#player2.receiveAttack([shotCoordinates.x, shotCoordinates.y]);
+    console.log(attackResult);
+    if (attackResult.fired) {
+      if (attackResult.shot.wasSuccess) {
+        battleReport.playerShotStatus = 'hit';
+        return battleReport;
+      }
+      battleReport.playerShotStatus = 'miss';
+      let aiAttackResult;
+      do {
+        let x;
+        let y;
+        do {
+          x = Math.floor(Math.random() * 10);
+          y = Math.floor(Math.random() * 10);
+          aiAttackResult = this.#player1.receiveAttack([x, y]);
+        } while (!aiAttackResult.fired);
+        battleReport.aiShots.push({
+          coordinate: [x, y],
+          shotStatus: aiAttackResult.shot.wasSuccess ? 'hit' : 'miss',
+        });
+      } while (aiAttackResult.shot.wasSuccess);
+    }
+
+    return battleReport;
   }
 }
 

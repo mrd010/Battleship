@@ -23,9 +23,9 @@ const prepareNextPhase = function prepareNextPhase(playScreen, game) {
   opponentBoard.querySelectorAll('button').forEach((boardBtn) => {
     boardBtn.classList.add('hover:bg-slate-50/20');
     boardBtn.addEventListener('click', () => {
-      const coordinates = getSquareCoordinates(boardBtn);
-      console.log(coordinates);
-      // game.player(2).receiveAttack(coordinates);
+      const coordinate = getSquareCoordinates(boardBtn);
+      const battleResult = game.playTurn(coordinate);
+      console.log(battleResult);
     });
   });
 };
