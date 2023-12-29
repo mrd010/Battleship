@@ -2,6 +2,21 @@ import { getGameDefaults, setupGame } from './GameController';
 import { createPlayScreen, createStartScreen } from './TemplateCreator';
 
 // #############################################################
+const prepareNextPhase = function prepareNextPhase(playScreen) {
+  playScreen.classList.replace('grid-rows-[auto_auto_1fr]', 'grid-rows-[auto_1fr]');
+  // hide ships menu
+  playScreen.querySelector('#ships-menu').remove();
+
+  // show opponent board
+  const opponentField = playScreen.querySelector('#opponent-field');
+  const opponentBoard = opponentField.querySelector('.game-board');
+  opponentField.classList.remove('opacity-20');
+
+  //
+  const playerField = playScreen.querySelector('#player-field');
+  const playerBoard = playerField.querySelector('.game-board');
+};
+// #############################################################
 const createShipPlaceholder = function createShipPlaceholder(
   shipLabel,
   sampleCell,
@@ -39,14 +54,16 @@ const createShipPlaceholder = function createShipPlaceholder(
   shipPlaceholder.style.gridColumnEnd = `span ${shipWidth}`;
 
   // 3.make text inside according to ship name
-  shipPlaceholder.textContent = shipLabel.firstChild.textContent;
+  const name = shipLabel.firstChild.cloneNode(true);
+  shipPlaceholder.appendChild(name);
   shipPlaceholder.removeAttribute('for');
 
   // 4.text orientation changes on rotate
   shipPlaceholder.style.writingMode = orientation === 'h' ? 'horizontal-tb' : 'vertical-rl';
 
-  // 4.send placeholder behind board
+  // 5.send placeholder behind board and add colors
   shipPlaceholder.classList.add('-z-10');
+  shipPlaceholder.classList.add('bg-gray-500/50');
 
   return shipPlaceholder;
 };
@@ -161,6 +178,7 @@ const loadPlayScreen = function loadPlayScreen() {
 
           // check if all player ships placed
           if (game.allShipsPlaced(1)) {
+            prepareNextPhase(playScreen);
           }
         }
       }

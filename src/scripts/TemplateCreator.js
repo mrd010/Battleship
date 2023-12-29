@@ -1,10 +1,11 @@
 import { appendChildren, createContainer, createElementWithClasses } from './ElementCreator';
 
+// ####################################################################################
 export const createStartScreen = function createStartScreen() {
   const startScreen = createContainer('grid h-screen items-center justify-center', 'start-screen');
   const startBtn = createElementWithClasses(
     'button',
-    'rounded-full bg-amber-400 px-4 py-2 font-bold text-slate-900 hover:bg-amber-300 active:bg-amber-500',
+    'rounded-full bg-amber-400 px-4 py-2 font-bold text-xl text-slate-900 hover:bg-amber-300 active:bg-amber-500',
     ['id', 'start-button']
   );
   startBtn.textContent = 'Start Battleship';
@@ -12,12 +13,13 @@ export const createStartScreen = function createStartScreen() {
   return startScreen;
 };
 
+// ####################################################################################
 const createPlayerField = function createPlayerField() {
-  const playerField = createContainer('grid grid-rows-[auto_minmax(0,1fr)] self-stretch');
+  const playerField = createContainer('grid grid-rows-[auto_minmax(0,1fr)] self-stretch gap-4');
   // header
-  const playerFieldHeader = createContainer('field-header p-2 m-2');
+  const playerFieldHeader = createContainer('field-header p-4 m-4');
   appendChildren(playerFieldHeader, [
-    createElementWithClasses('h2', 'title text-center text-slate-50 text-lg font-bold'),
+    createElementWithClasses('h2', 'title text-center text-slate-50 text-2xl font-extrabold'),
     createElementWithClasses('h3', 'desc text-center text-slate-100 text-md font-bold'),
   ]);
   playerField.appendChild(playerFieldHeader);
@@ -32,7 +34,7 @@ const createPlayerField = function createPlayerField() {
     for (let y = 0; y < 10; y += 1) {
       const gridCell = createElementWithClasses(
         'button',
-        'w-6 h-6 bg-slate-50/5 border-[1px] border-slate-50/10',
+        'w-10 h-10 bg-slate-50/5 border-[1px] border-slate-50/10',
         ['data-x', x],
         ['data-y', y]
       );
@@ -44,31 +46,36 @@ const createPlayerField = function createPlayerField() {
   return playerField;
 };
 
+// ####################################################################################
 export const createPlayScreen = function createPlayScreen(shipsSetup) {
   // play screen page ########################
   const playScreen = createContainer(
-    'grid grid-rows-[auto_auto_1fr] min-h-screen items-start',
+    'grid grid-rows-[auto_auto_1fr] grid grid-cols-[1fr_1fr] min-h-screen items-start',
     'play-screen'
   );
   // header
-  const playScreenHeader = createElementWithClasses('header', 'p-2 bg-amber-400 border-b-2');
+  const playScreenHeader = createElementWithClasses(
+    'header',
+    'p-2 bg-amber-400 border-b-2 col-span-2'
+  );
   const playScreenHeaderTitle = createElementWithClasses(
     'h1',
-    'text-slate-900 font-extrabold font-display text-2xl text-center'
+    'text-slate-900 font-extrabold font-display text-4xl text-center'
   );
   playScreenHeaderTitle.textContent = 'Battleship';
   playScreenHeader.appendChild(playScreenHeaderTitle);
   playScreen.appendChild(playScreenHeader);
 
   // ships select menu section ########################
-  const shipsMenu = createContainer('flex flex-wrap flex-row p-4 gap-2 border-b-2', 'ships-menu');
+  const shipsMenu = createContainer(
+    'flex flex-wrap col-span-2 flex-row p-4 gap-3 border-b-2',
+    'ships-menu'
+  );
   // create a ship button for each ship in shipsSetup
   // with ship name and ship length provided
   // each ship takes length amount of grid cells
   shipsSetup.forEach((ship, index) => {
-    const shipBtn = createContainer(
-      'ship-button grid items-stretch peer-checked:ring-8 rounded-md'
-    );
+    const shipBtn = createContainer('ship-button grid items-stretch rounded-sm');
     const shipRadioBtn = createElementWithClasses(
       'input',
       'peer hidden',
@@ -80,17 +87,17 @@ export const createPlayScreen = function createPlayScreen(shipsSetup) {
     );
     const shipLabel = createElementWithClasses(
       'label',
-      `grid items-stretch border-2 peer-checked:ring-2 peer-disabled:opacity-30 opacity-80 peer-checked:opacity-100 cursor-pointer ring-red-500 rounded-md overflow-hidden relative text-slate-50 text-sm`,
+      `grid border-2 peer-checked:ring-2 peer-disabled:opacity-30 opacity-80 peer-checked:opacity-100 cursor-pointer ring-red-500 rounded-md overflow-hidden relative text-slate-50 text-sm text-center`,
       ['for', `ship${index}`],
       ['data-ship-name', ship.name],
       ['data-ship-length', ship.length]
     );
-    shipLabel.style.height = `2rem`;
-    shipLabel.style.width = `${2 * ship.length}rem`;
+    shipLabel.style.height = `2.5rem`;
+    shipLabel.style.width = `${2.5 * ship.length}rem`;
     shipLabel.style.gridTemplateColumns = `repeat(${ship.length}, minmax(0, 1fr))`;
     shipLabel.style.gridTemplateRows = `repeat(1, minmax(0, 1fr))`;
     const shipName = createContainer(
-      'ship-name text-slate-50 z-10 text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm'
+      'ship-name text-slate-50 z-10 text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 uppercase'
     );
     shipName.textContent = ship.name;
     shipLabel.appendChild(shipName);
@@ -107,13 +114,16 @@ export const createPlayScreen = function createPlayScreen(shipsSetup) {
   // create play fields section ########################
   // player field
   const playerField = createPlayerField();
+  playerField.classList.add('border-r-2');
   playerField.setAttribute('id', 'player-field');
   playerField.querySelector('.field-header .title').textContent = 'Place your ships in board';
-  playerField.querySelector('.field-header .desc').textContent = 'Press R for rotate';
+  playerField.querySelector('.field-header .desc').textContent =
+    'Select Ship and Place it . Press R for rotate';
   // opponent board
   const opponentField = createPlayerField();
   opponentField.setAttribute('id', 'opponent-field');
-  opponentField.classList.add('hidden');
+  opponentField.querySelector('.field-header .title').textContent = 'Player2 (AI)';
+  opponentField.classList.add('opacity-20');
   // append
   appendChildren(playScreen, [playerField, opponentField]);
 
