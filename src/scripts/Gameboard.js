@@ -41,11 +41,33 @@ class Gameboard {
   }
 
   #areValidSquares(coordinatesArray) {
+    const surroundSquares = [
+      [0, -1],
+      [1, -1],
+      [1, 0],
+      [1, 1],
+      [0, 1],
+      [-1, 1],
+      [-1, 0],
+      [-1, -1],
+    ];
+
     // check if all coordinates are Valid in board
-    return coordinatesArray.every(
-      (coordinate) =>
-        this.#isCoordinateInBoard(coordinate) && this.#board[coordinate[0]][coordinate[1]] === null
-    );
+    return coordinatesArray.every((coordinate) => {
+      const x = coordinate[0];
+      const y = coordinate[1];
+
+      return (
+        this.#isCoordinateInBoard(coordinate) &&
+        this.#board[x][y] === null &&
+        surroundSquares.every((square) => {
+          if (this.#isCoordinateInBoard([x + square[0], y + square[1]])) {
+            return this.#board[x + square[0]][y + square[1]] === null;
+          }
+          return true;
+        })
+      );
+    });
   }
 
   #isValidPlacement(shipLength, coordinatesArray) {
@@ -71,6 +93,7 @@ class Gameboard {
         return true;
       }
     }
+
     return false;
   }
 
