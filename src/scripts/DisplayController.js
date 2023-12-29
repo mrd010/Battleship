@@ -1,8 +1,11 @@
 import { getGameDefaults, setupGame } from './GameController';
 import { createPlayScreen, createStartScreen } from './TemplateCreator';
 
+const getSquareCoordinates = function getSquareCoordinates(square) {
+  return { x: Number(square.getAttribute('data-col')), y: Number(square.getAttribute('data-row')) };
+};
 // #############################################################
-const prepareNextPhase = function prepareNextPhase(playScreen) {
+const prepareNextPhase = function prepareNextPhase(playScreen, game) {
   playScreen.classList.replace('grid-rows-[auto_auto_1fr]', 'grid-rows-[auto_1fr]');
   // hide ships menu
   playScreen.querySelector('#ships-menu').remove();
@@ -11,10 +14,20 @@ const prepareNextPhase = function prepareNextPhase(playScreen) {
   const opponentField = playScreen.querySelector('#opponent-field');
   const opponentBoard = opponentField.querySelector('.game-board');
   opponentField.classList.remove('opacity-20');
-
   //
   const playerField = playScreen.querySelector('#player-field');
+  playerField.querySelector('.field-header .title').textContent = 'Player1';
+  playerField.querySelector('.field-header .desc').textContent = '';
   const playerBoard = playerField.querySelector('.game-board');
+
+  opponentBoard.querySelectorAll('button').forEach((boardBtn) => {
+    boardBtn.classList.add('hover:bg-slate-50/20');
+    boardBtn.addEventListener('click', () => {
+      const coordinates = getSquareCoordinates(boardBtn);
+      console.log(coordinates);
+      // game.player(2).receiveAttack(coordinates);
+    });
+  });
 };
 // #############################################################
 const createShipPlaceholder = function createShipPlaceholder(
@@ -38,13 +51,13 @@ const createShipPlaceholder = function createShipPlaceholder(
   // position
   // place placeholder in board according to its size and pointer coordinates
   // also position cant be out of board
-  const startPointRow = Math.min(
-    11 - shipHeight,
-    Math.max(1, coordinates.x + 1 - Math.floor(shipHeight / 2))
-  );
   const startPointCol = Math.min(
     11 - shipWidth,
-    Math.max(1, coordinates.y + 1 - Math.floor(shipWidth / 2))
+    Math.max(1, coordinates.x + 1 - Math.floor(shipWidth / 2))
+  );
+  const startPointRow = Math.min(
+    11 - shipHeight,
+    Math.max(1, coordinates.y + 1 - Math.floor(shipHeight / 2))
   );
 
   // place holder spans from starting point to its length
@@ -141,10 +154,7 @@ const loadPlayScreen = function loadPlayScreen() {
       // when hover on any board cell and there is a ship selected for place
       if (activeShipLabel !== null) {
         // save current coordinates
-        coordinates = {
-          x: Number(boardBtn.getAttribute('data-x')),
-          y: Number(boardBtn.getAttribute('data-y')),
-        };
+        coordinates = getSquareCoordinates(boardBtn);
         // create a placeholder with in current coordinates and selected ship
         shipPlaceholder = createShipPlaceholder(
           activeShipLabel,
@@ -178,7 +188,7 @@ const loadPlayScreen = function loadPlayScreen() {
 
           // check if all player ships placed
           if (game.allShipsPlaced(1)) {
-            prepareNextPhase(playScreen);
+            prepareNextPhase(playScreen, game);
           }
         }
       }

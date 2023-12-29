@@ -30,15 +30,15 @@ const createPlayerField = function createPlayerField() {
   );
   playerBoard.style.gridTemplateRows = `repeat(10, minmax(0, 1fr))`;
   playerBoard.style.gridTemplateColumns = `repeat(10, minmax(0, 1fr))`;
-  for (let x = 0; x < 10; x += 1) {
-    for (let y = 0; y < 10; y += 1) {
+  for (let row = 0; row < 10; row += 1) {
+    for (let col = 0; col < 10; col += 1) {
       const gridCell = createElementWithClasses(
         'button',
         'w-10 h-10 bg-slate-50/5 border-[1px] border-slate-50/10',
-        ['data-x', x],
-        ['data-y', y]
+        ['data-row', row],
+        ['data-col', col]
       );
-      gridCell.style.gridArea = `${x + 1} / ${y + 1} / span 1 / span 1`;
+      gridCell.style.gridArea = `${row + 1} / ${col + 1} / span 1 / span 1`;
       playerBoard.appendChild(gridCell);
     }
   }
