@@ -5,9 +5,14 @@ class Player {
 
   #isAI;
 
-  constructor(type = 'p') {
+  constructor(type, shipsSetup) {
     this.#gameboard = new Gameboard();
-    this.#isAI = type === 'ai';
+    this.#gameboard.setupShips(shipsSetup);
+    this.#isAI = false;
+    if (type === 'ai') {
+      this.#isAI = true;
+      console.log(this.#gameboard.randomPlaceShips());
+    }
   }
 
   isAI() {

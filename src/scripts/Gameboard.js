@@ -132,6 +132,29 @@ class Gameboard {
   allShipsSunken() {
     return this.#ships.every((ship) => ship.isSunk());
   }
+
+  randomPlaceShips() {
+    for (let index = this.#ships.length - 1; index >= 0; index -= 1) {
+      const ship = this.#ships[index];
+
+      while (!ship.isPlaced()) {
+        const ordination = Math.random() > 0.5 ? 'v' : 'h';
+        const num1 = Math.floor(Math.random() * 10);
+        const num2 = Math.floor(Math.random() * 10 - ship.getLength() + 1);
+        const coordinates = [];
+        for (let i = 0; i < ship.getLength(); i += 1) {
+          if (ordination === 'h') {
+            coordinates.push([num1, num2 + i]);
+          } else {
+            coordinates.push([num2 + i, num1]);
+          }
+        }
+
+        this.placeShip(ship.getName(), ship.getLength(), coordinates);
+      }
+    }
+    return this.#board;
+  }
 }
 
 export default Gameboard;

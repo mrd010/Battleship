@@ -18,8 +18,7 @@ class Game {
 
   // create and assign a new player to game
   addPlayer(playerType) {
-    const pl = new Player(playerType);
-    pl.getGameboard().setupShips(this.#shipsSetup);
+    const pl = new Player(playerType, this.#shipsSetup);
     // fill in  player 1 first
     if (this.#player1 === null) {
       this.#player1 = pl;
