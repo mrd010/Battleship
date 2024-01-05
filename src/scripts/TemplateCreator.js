@@ -111,7 +111,7 @@ export const createPlayScreen = function createPlayScreen(shipsSetup) {
   });
   playScreen.appendChild(shipsMenu);
 
-  // create play fields section ########################
+  // create play fields section ####################################
   // player field
   const playerField = createPlayerField();
   playerField.classList.add('border-r-2');
@@ -128,4 +128,19 @@ export const createPlayScreen = function createPlayScreen(shipsSetup) {
   appendChildren(playScreen, [playerField, opponentField]);
 
   return playScreen;
+};
+// ##################################################################
+export const createGameOverScreen = function createGameOverScreen(winnerName) {
+  const bgOverlay = createContainer('fixed w-full h-full bg-slate-900/50 grid items-center');
+  const gameOverContainer = createContainer('bg-red-700 text-slate-50 border-2', 'game-over p-4');
+  const title = createElementWithClasses(
+    'h3',
+    'title text-xl font-bold text-center font-display p-2'
+  );
+  title.textContent = 'Game Over';
+  const desc = createElementWithClasses('p', 'desc text-center text-2xl font-bold p-2');
+  desc.textContent = `${winnerName} won`;
+  appendChildren(gameOverContainer, [title, desc]);
+  bgOverlay.appendChild(gameOverContainer);
+  return bgOverlay;
 };

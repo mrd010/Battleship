@@ -1,8 +1,17 @@
 import { getGameDefaults, setupGame } from './GameController';
-import { createPlayScreen, createStartScreen } from './TemplateCreator';
+import { createGameOverScreen, createPlayScreen, createStartScreen } from './TemplateCreator';
 
+const gameOver = function gameOverScreen(screen, winnerName) {
+  const gameOverOverlay = createGameOverScreen(winnerName);
+  screen.appendChild(gameOverOverlay);
+};
+// #############################################################
 const getSquareCoordinates = function getSquareCoordinates(square) {
   return { x: Number(square.getAttribute('data-col')), y: Number(square.getAttribute('data-row')) };
+};
+// #############################################################
+const getBoardCell = function getBoardCell(board, coordinates) {
+  return board.children.item(coordinates.y * 10 + coordinates.x);
 };
 // #############################################################
 const prepareNextPhase = function prepareNextPhase(playScreen, game) {
@@ -25,7 +34,26 @@ const prepareNextPhase = function prepareNextPhase(playScreen, game) {
     boardBtn.addEventListener('click', () => {
       const coordinate = getSquareCoordinates(boardBtn);
       const battleResult = game.playTurn(coordinate);
-      console.log(battleResult);
+      if (battleResult.playerShotStatus !== 'invalid') {
+        if (battleResult.playerShotStatus === 'hit') {
+          boardBtn.classList.add('hit');
+        } else {
+          boardBtn.classList.add('miss');
+        }
+      }
+
+      battleResult.aiShots.forEach((shot) => {
+        const target = getBoardCell(playerBoard, { x: shot.coordinate[0], y: shot.coordinate[1] });
+        if (shot.shotStatus === 'hit') {
+          target.classList.add('hit');
+        } else {
+          target.classList.add('miss');
+        }
+      });
+
+      if (battleResult.winner > 0) {
+        gameOver(playScreen, battleResult.winner === 1 ? 'Player' : 'Opponent');
+      }
     });
   });
 };

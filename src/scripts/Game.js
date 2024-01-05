@@ -56,12 +56,14 @@ class Game {
   }
 
   playTurn(shotCoordinates) {
-    const battleReport = { playerShotStatus: 'invalid', aiShots: [] };
+    const battleReport = { playerShotStatus: 'invalid', aiShots: [], winner: 0 };
     const attackResult = this.#player2.receiveAttack([shotCoordinates.x, shotCoordinates.y]);
-    console.log(attackResult);
     if (attackResult.fired) {
       if (attackResult.shot.wasSuccess) {
         battleReport.playerShotStatus = 'hit';
+        if (attackResult.win) {
+          battleReport.winner = 1;
+        }
         return battleReport;
       }
       battleReport.playerShotStatus = 'miss';
@@ -78,7 +80,10 @@ class Game {
           coordinate: [x, y],
           shotStatus: aiAttackResult.shot.wasSuccess ? 'hit' : 'miss',
         });
-      } while (aiAttackResult.shot.wasSuccess);
+        if (aiAttackResult.win) {
+          battleReport.winner = 2;
+        }
+      } while (aiAttackResult.shot.wasSuccess && battleReport.winner === 0);
     }
 
     return battleReport;

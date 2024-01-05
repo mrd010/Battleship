@@ -3,3 +3,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .game-board button {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  .hit {
+    background-image: url('./assets/img/radio_button_checked_FILL0_wght400_GRAD0_opsz24.svg');
+  }
+
+  .miss {
+    background-image: url('./assets/img/close_FILL0_wght400_GRAD0_opsz24.svg');
+  }
+}

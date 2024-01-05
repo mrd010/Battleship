@@ -29,7 +29,8 @@ class Player {
 
   receiveAttack(coordinate) {
     if (this.#gameboard.isValidShot(coordinate)) {
-      return { fired: true, shot: this.#gameboard.receiveAttack(coordinate) };
+      const shot = this.#gameboard.receiveAttack(coordinate);
+      return { fired: true, shot, win: shot.destroyed ? this.#gameboard.allShipsSunken() : false };
     }
 
     return { fired: false };
